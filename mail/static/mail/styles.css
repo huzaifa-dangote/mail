@@ -1,0 +1,9 @@
+textarea {
+    min-height: 400px;
+}
+
+#email-brief {
+    border: 1px solid black;
+    margin-bottom: 5px;
+    padding: 4px;
+}
