@@ -26,7 +26,7 @@ function compose_email() {
   subject.value = '';
   body.value = '';
 
-    document.querySelector('#submit').addEventListener('click', function () {
+    document.querySelector('#compose-form').addEventListener('submit', event => {
         fetch('/emails', {
             method: 'POST',
             body: JSON.stringify({
@@ -39,7 +39,8 @@ function compose_email() {
             .then(result => {
                 console.log(result);
             })
-        return false;
+        event.preventDefault();
+        setTimeout(() => load_mailbox('sent'), 500);
     })
 }
 
@@ -70,7 +71,7 @@ function reply_email(email_id) {
     })
 
     // Submit reply
-    document.querySelector('#submit').addEventListener('click', () => {
+    document.querySelector('#compose-form').addEventListener('submit', event => {
         fetch('/emails', {
             method: 'POST',
             body: JSON.stringify({
@@ -83,7 +84,8 @@ function reply_email(email_id) {
         .then(result => {
             console.log(result);
         })
-        return false;
+        event.preventDefault();
+        setTimeout(() => load_mailbox('sent'), 500);
     })
 }
 
@@ -95,8 +97,9 @@ function load_mailbox(mailbox) {
   document.querySelector('#compose-view').style.display = 'none';
 
   // Show the mailbox name
-  document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+  document.querySelector('#emails-view').innerHTML = `<h2 class="w3-opacity">${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h2>`;
 
+  // Archiving
   function archive(email_id) {
       fetch(`/emails/${email_id}`, {
           method: 'PUT',
@@ -108,9 +111,10 @@ function load_mailbox(mailbox) {
       .then(result => {
           console.log(result);
       })
-      load_mailbox('inbox');
+      setTimeout(() => load_mailbox('inbox'), 200);
   }
 
+  // Unarchiving
   function unarchive(email_id) {
       fetch(`/emails/${email_id}`, {
           method: 'PUT',
@@ -122,7 +126,7 @@ function load_mailbox(mailbox) {
       .then(result => {
           console.log(result);
       })
-      load_mailbox('inbox');
+      setTimeout(() => load_mailbox('inbox'), 200);
   }
 
   // Email page
@@ -148,30 +152,40 @@ function load_mailbox(mailbox) {
       .then(email => {
           console.log(email);
 
+          const img = document.createElement('img');
           const p_sender = document.createElement('p');
           const p_recipients = document.createElement('p');
-          const p_subject = document.createElement('p');
+          const p_subject = document.createElement('h5');
           const p_timestamp = document.createElement('p');
           const p_body = document.createElement('p');
           const div_meta_data = document.createElement('div');
           const reply_button = document.createElement('button');
+          const br = document.createElement('br');
+          const hr = document.createElement('hr');
+          const from_n_time = document.createElement('h4');
 
           p_sender.innerHTML = `<strong>From:</strong> ${email.sender}`;
           p_recipients.innerHTML = `<strong>To:</strong> ${email.recipients}`;
-          p_subject.innerHTML = `<strong>Subject:</strong> ${email.subject}`;
+          p_subject.innerHTML = `Subject: ${email.subject}`;
           p_timestamp.innerHTML = `<strong>Timestamp:</strong> ${email.timestamp}`;
           p_body.innerHTML = `<pre>${email.body}</pre>`;
-          //body = email.body;
-          //p_body.innerHTML = email.body.replace(/\n/g, "<br><br>");
-          reply_button.textContent = `Reply`;
+          from_n_time.innerHTML = `<i class="fa fa-clock-o"></i> From ${email.sender}, ${email.timestamp}`;
+          reply_button.innerHTML = `Reply<i class="w3-margin-left fa fa-mail-reply"></i>`;
+          reply_button.className = 'w3-button w3-light-grey';
+          img.src = 'https://www.w3schools.com/w3images/avatar2.png';
+          img.style.width = '20%';
+          img.className = 'w3-round';
+          p_subject.className = 'w3-opacity';
 
-          div_meta_data.appendChild(p_sender);
-          div_meta_data.appendChild(p_recipients);
+          div_meta_data.appendChild(br);
+          div_meta_data.appendChild(img);
           div_meta_data.appendChild(p_subject);
-          div_meta_data.appendChild(p_timestamp);
+          div_meta_data.appendChild(from_n_time);
+          div_meta_data.appendChild(p_recipients);
 
           document.querySelector('#email-view').append(div_meta_data);
           document.querySelector('#email-view').append(reply_button);
+          document.querySelector('#email-view').append(hr);
           document.querySelector('#email-view').append(p_body);
 
           reply_button.addEventListener('click', () => reply_email(email.id))
@@ -185,49 +199,85 @@ function load_mailbox(mailbox) {
       console.log(emails);
 
       for (let i in emails) {
-          const div = document.createElement('div');
-          const p_sender = document.createElement('p');
+          const email_container = document.createElement('div');
+          const email_brief = document.createElement('div');
+          const email_meta_data = document.createElement('div');
+          const span_sender = document.createElement('span');
           const p_subject = document.createElement('p');
           const p_timestamp = document.createElement('p');
           const archive_button = document.createElement('button');
           const unarchive_button = document.createElement('button');
           const view_button = document.createElement('button');
+          const img = document.createElement('img');
           const email = emails[i];
-          div.id = 'email-brief';
+          email_container.id = 'email-container';
+          email_brief.id = 'email-brief';
+          email_meta_data.id = 'email-meta-data';
           archive_button.id = 'archive-button';
 
-          p_sender.innerHTML = `${email.sender}`;
-          p_subject.innerHTML = `${email.subject}`;
+          img.src = 'https://www.w3schools.com/w3images/avatar2.png';
+          img.style.width = '4%';
+          img.className = 'w3-round';
+          span_sender.innerHTML = `${email.sender}`;
+          p_subject.innerHTML = `Subject: ${email.subject}`;
           p_timestamp.innerHTML = `${email.timestamp}`;
+          p_timestamp.id = 'timestamp';
+          p_subject.id = 'subject';
           view_button.textContent = 'View';
-          archive_button.textContent = 'Archive';
-          unarchive_button.textContent = 'Unarchive';
+          span_sender.className = 'w3-opacity w3-medium w3-margin-left';
+          archive_button.innerHTML = `<i class="fa fa-archive"></i> Archive`;
+          archive_button.className = 'archiving w3-button w3-white w3-padding-small w3-border';
+          unarchive_button.innerHTML = `<i class="fa fa-folder-open"></i> Unarchive`;
+          unarchive_button.className = 'archiving w3-button w3-white w3-padding-small w3-border';
 
-          div.appendChild(p_sender);
-          div.appendChild(p_subject);
-          div.appendChild(p_timestamp);
-          div.appendChild(view_button);
-          //div.appendChild(archive_button);
+          email_brief.appendChild(img);
+          email_brief.appendChild(span_sender);
+          email_brief.appendChild(p_subject);
+          email_meta_data.appendChild(p_timestamp);
 
           if (email.read) {
-              div.style.backgroundColor = 'lightgrey';
-              //document.querySelector('#emails-view').append(div);
-              //archive_button.addEventListener('click', archiving);
-              //view_button.addEventListener('click', () => email_view(email.id));
+              email_container.style.backgroundColor = '#f2f2f2';
           }
 
           if (mailbox === 'inbox') {
-              div.appendChild(archive_button);
+              email_meta_data.appendChild(archive_button);
           }
 
           if (mailbox === 'archive') {
-              div.appendChild(unarchive_button);
+              email_meta_data.appendChild(unarchive_button);
           }
 
-          document.querySelector('#emails-view').append(div);
-          view_button.addEventListener('click', () => email_view(email.id));
+          email_container.addEventListener('mouseenter', () => {
+              email_container.style.backgroundColor = '#d9d9d9';
+          })
+
+          email_container.addEventListener('mouseleave', () => {
+              if (email.read) {
+                  email_container.style.backgroundColor = '#f2f2f2';
+              }
+              else {
+                  email_container.style.backgroundColor = 'white';
+              }
+          })
+
+          document.querySelector('#emails-view').append(email_container);
+          email_container.append(email_brief);
+          email_container.append(email_meta_data);
+          email_brief.addEventListener('click', () => email_view(email.id));
           archive_button.addEventListener('click', () => archive(email.id));
           unarchive_button.addEventListener('click', () => unarchive(email.id));
       }
   })
+}
+
+// To close sidebar
+function nav_close() {
+    document.getElementById("navSidebar").style.display = "none";
+    document.getElementById("navOverlay").style.display = "none";
+}
+
+// To open sidebar
+function nav_open() {
+    document.getElementById("navSidebar").style.display = "block";
+    document.getElementById("navOverlay").style.display = "block";
 }

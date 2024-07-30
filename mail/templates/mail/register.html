@@ -2,26 +2,39 @@
 
 {% block body %}
 
-    <h2>Register</h2>
+    <div class="flex-container">
 
-    {% if message %}
-        <div>{{ message }}</div>
-    {% endif %}
+        <div class="flex-item w3-border" style="padding-bottom:10px">
 
-    <form action="{% url 'register' %}" method="post">
-        {% csrf_token %}
-        <div class="form-group">
-            <input class="form-control" type="email" name="email" placeholder="Email Address">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="password" placeholder="Password">
-        </div>
-        <div class="form-group">
-            <input class="form-control" type="password" name="confirmation" placeholder="Confirm Password">
-        </div>
-        <input class="btn btn-primary" type="submit" value="Register">
-    </form>
+            {% if message %}
+                <div>{{ message }}</div>
+            {% endif %}
 
-    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+            <div class="w3-container w3-dark-grey" style="text-align:center">
+                <h2>Register</h2>
+            </div>
+            <form class="w3-container" action="{% url 'register' %}" method="post">
+                {% csrf_token %}
+                <p>
+                    <label class="w3-text-dark-grey"><b>Email Address</b></label>
+                    <input autofocus class="w3-input w3-border w3-sand" type="email" name="email">
+                </p>
+                <p>
+                    <label class="w3-text-dark-grey"><b>Password</b></label>
+                    <input class="w3-input w3-border w3-sand" type="password" name="password">
+                </p>
+                <p>
+                    <label class="w3-text-dark-grey"><b>Confirm Password</b></label>
+                    <input class="w3-input w3-border w3-sand" type="password" name="confirmation">
+                </p>
+                <p style="text-align:center">
+                    <button class="w3-button w3-dark-grey" type="submit">Register</button>
+                </p>
+            </form>
+            <div class="w3-container">
+                Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

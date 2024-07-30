@@ -2,8 +2,79 @@ textarea {
     min-height: 400px;
 }
 
+#email-container {
+    border-bottom: 1px solid grey;
+    position: relative;
+    width: 100%;
+    height: 100px;
+    cursor: pointer;
+}
+
 #email-brief {
-    border: 1px solid black;
-    margin-bottom: 5px;
-    padding: 4px;
+    position: absolute;
+    width: 99%;
+    top: 14%;
+    left: 3%;
+}
+
+#email-meta-data {
+    position: absolute;
+    top: 22%;
+    right: 3%;
+}
+
+#timestamp {
+    margin: 0;
+    font-size: small;
+}
+
+#sender {
+    margin: 0;
+}
+
+#subject {
+    margin-top: 1%;
+}
+
+.archiving {
+    float: right;
+    font-size: small;
+}
+
+#emails-view {
+    margin-left: 320px;
+}
+
+#email-view {
+    margin-left: 320px;
+}
+
+#compose-view {
+    margin-left: 320px;
+}
+
+html,body,h1,h2,h3,h4,h5,h6 {
+    font-family: "RobotoDraft", "Roboto", sans-serif;
+}
+
+.w3-bar-block .w3-bar-item {
+    padding: 16px;
+}
+
+#navSidebar {
+    width: 320px;
+    z-index: 3;
+}
+
+.flex-container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+pre {
+    font-family: "RobotoDraft", "Roboto", sans-serif;
+    white-space: pre-wrap;
 }

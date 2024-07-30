@@ -2,37 +2,40 @@
 {% load static %}
 
 {% block body %}
-    <h2>{{ request.user.email }}</h2>
+    <nav class="w3-sidebar w3-bar-block w3-collapse w3-white w3-animate-left w3-card" id="navSidebar">
+        <span class="w3-bar-item" style="font-size: 20px">{{ request.user.email }}</span>
+        <button onclick="nav_close()" class="w3-bar-item w3-button w3-hide-large w3-large">Close <i class="fa fa-remove"></i></button>
+        <button class="w3-bar-item w3-button w3-dark-grey w3-hover-black" id="compose"><i class="fa fa-pencil w3-margin-right"></i>Compose</button>
+        <button class="w3-bar-item w3-button w3-red w3-hover-sand" id="inbox"><i class="fa fa-inbox w3-margin-right"></i>Inbox</button>
+        <button class="w3-bar-item w3-button" id="sent"><i class="fa fa-paper-plane w3-margin-right"></i>Sent</button>
+        <button class="w3-bar-item w3-button" id="archived"><i class="fa fa-archive w3-margin-right"></i>Archived</button>
+        <a class="w3-bar-item w3-button" href="{% url 'logout' %}"><i class="fa fa-sign-out w3-margin-right"></i>Log Out</a>
+    </nav>
 
-    <button class="btn btn-sm btn-outline-primary" id="inbox">Inbox</button>
-    <button class="btn btn-sm btn-outline-primary" id="compose">Compose</button>
-    <button class="btn btn-sm btn-outline-primary" id="sent">Sent</button>
-    <button class="btn btn-sm btn-outline-primary" id="archived">Archived</button>
-    <a class="btn btn-sm btn-outline-primary" href="{% url 'logout' %}">Log Out</a>
-    <hr>
+    <!-- Overlay effect on small-to-medium screens, when collapsed sidebar is opened  -->
+    <div class="w3-overlay w3-hide-large w3-animate-opacity" onclick="nav_close()" style="cursor:pointer" id="navOverlay"></div>
 
-    <div id="emails-view">
+    <!-- Icon to open collapsed sidebar -->
+    <i class="fa fa-bars w3-button w3-white w3-hide-large w3-xlarge w3-margin-left w3-margin-top" onclick="nav_open()"></i>
+
+    <div id="emails-view" class="w3-main w3-container">
     </div>
 
-    <div id="compose-view">
-        <h3>New Email</h3>
+    <div id="compose-view" class="w3-main w3-container">
+        <h3 class="w3-opacity">New Email</h3>
         <form id="compose-form">
-            <div class="form-group">
-                From: <input disabled class="form-control" value="{{ request.user.email }}">
-            </div>
-            <div class="form-group">
-                To: <input id="compose-recipients" class="form-control">
-            </div>
-            <div class="form-group">
-                <input class="form-control" id="compose-subject" placeholder="Subject">
-            </div>
-            <textarea class="form-control" id="compose-body" placeholder="Body"></textarea>
-            <input id="submit" type="submit" class="btn btn-primary"/>
+            <label>From</label><input disabled class="w3-input w3-border" value="{{ request.user.email }}"><br />
+            <label>To</label><input id="compose-recipients" class="w3-input w3-border"><br />
+            <label>Subject</label><input class="w3-input w3-border" id="compose-subject"><br />
+            <textarea rows="4" class="w3-input w3-border" id="compose-body" placeholder="What's on your mind?"></textarea><br />
+            <button type="submit" id="submit" class="w3-button w3-light-grey">Send <i class="fa fa-paper-plane"></i></button>
         </form>
     </div>
 
-    <div id="email-view">
+    <!-- Page to view an email -->
+    <div id="email-view" class="w3-main w3-container">
     </div>
+    <br />
 {% endblock %}
 
 {% block script %}
